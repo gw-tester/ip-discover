@@ -31,7 +31,7 @@ func getLinksByNetwork(network *net.IPNet) ([]netlink.Link, bool) {
 	// ip route show table local
 	if localRoutes, err := netlink.RouteListFiltered(netlink.FAMILY_V4,
 		&netlink.Route{Table: 254}, netlink.RT_FILTER_TABLE); err == nil {
-		log.Info("Adding local routes")
+		log.Debug("Adding local routes")
 
 		routes = append(routes, localRoutes...)
 	}
@@ -39,14 +39,14 @@ func getLinksByNetwork(network *net.IPNet) ([]netlink.Link, bool) {
 	// ip route show table main
 	if mainRoutes, err := netlink.RouteListFiltered(netlink.FAMILY_V4,
 		&netlink.Route{Table: 255}, netlink.RT_FILTER_TABLE); err == nil {
-		log.Info("Adding main routes")
+		log.Debug("Adding main routes")
 
 		routes = append(routes, mainRoutes...)
 	}
 
 	log.WithFields(log.Fields{
 		"routes": routes,
-	}).Debug("Local routes found")
+	}).Debug("Routes found")
 
 	links := []netlink.Link{}
 
@@ -55,7 +55,7 @@ func getLinksByNetwork(network *net.IPNet) ([]netlink.Link, bool) {
 		if route.Dst != nil && route.Dst.IP != nil && route.Dst.IP.String() == network.IP.String() {
 			log.WithFields(log.Fields{
 				"route": route,
-			}).Debug("Local routes matched")
+			}).Debug("Route matched")
 
 			link, _ := netlink.LinkByIndex(route.LinkIndex)
 			links = append(links, link)
@@ -86,7 +86,7 @@ func waitForNetworkCreation(network *net.IPNet) []netlink.Link {
 				"destination": update.Route.Dst,
 				"gateway":     update.Route.Gw,
 				"network":     network,
-			}).Info("Route add event received") // sudo ip route add 192.168.1.0/24 via 192.168.0.1 dev eno1
+			}).Debug("Route add event received") // sudo ip route add 192.168.1.0/24 via 192.168.0.1 dev eno1
 
 			if links, ok := getLinksByNetwork(network); ok {
 				log.Infof("%s network was created", network)
