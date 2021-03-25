@@ -14,12 +14,16 @@ limitations under the License.
 package discover
 
 import (
+	"errors"
 	"net"
 	"syscall"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/vishvananda/netlink"
 )
+
+// ErrInvalidNetwork indicates that an invalid network was passed to discover.
+var ErrInvalidNetwork = errors.New("invalid network")
 
 func getLinksByNetwork(network *net.IPNet) ([]netlink.Link, bool) {
 	log.WithFields(log.Fields{

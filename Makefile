@@ -9,7 +9,7 @@
 
 export CGO_ENABLED ?= 0
 GO_CMD ?= $(shell which go 2> /dev/null || echo go)
-GOLANGCI_VERSION = 1.37.0
+GOLANGCI_VERSION = 1.38.0
 
 # If the first argument is "run"...
 ifeq (run,$(firstword $(MAKECMDGOALS)))
